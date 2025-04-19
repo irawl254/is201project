@@ -6,20 +6,57 @@
   font-weight: 400;
   font-style: normal;
 }
+header {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 
 h1 {
   font-size: 4.5rem;
-  margin: 10px;
+  margin: 0px 10px;
   font-family: "Londrina Shadow", sans-serif;
   color: #432616;
   text-align: center;
 }
 h2 {
   font-size: 1.5rem;
-  margin: 10px;
+  margin: 0px 10px;
   width: 75%;
   color: #432616;
   text-align: center;
+}
+
+h3 {
+  font-size: 1.2rem;
+  margin: 0px 10px;
+  color: #432616;
+  text-align: center;
+}
+
+li{
+  color: #432616;
+  font-size: 1rem;
+  margin: 0px 10px;
+  padding: 5px;
+}
+nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0px;
+}
+
+nav a{
+  text-decoration: none;
+  color: #fff;
+  font-size: 1.2rem;
+  margin: 0px 10px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #432616;
 }
 
 body {

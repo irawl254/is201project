@@ -7901,13 +7901,13 @@ fieldset:disabled .btn {
 }
 
 .my-5 {
-  margin-top: 3rem !important;
-  margin-bottom: 3rem !important;
+  margin-top: 1rem !important;
+  margin-bottom: 1rem !important;
 }
 
 .my-auto {
-  margin-top: auto !important;
-  margin-bottom: auto !important;
+  margin-top: 1rem !important;
+  margin-bottom: 1rem !important;
 }
 
 .mt-0 {
@@ -8101,9 +8101,9 @@ fieldset:disabled .btn {
   padding-bottom: 1.5rem !important;
 }
 
-.py-5 {
-  padding-top: 3rem !important;
-  padding-bottom: 3rem !important;
+.py-5 section{
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
 }
 
 .pt-0 {
@@ -8420,7 +8420,7 @@ fieldset:disabled .btn {
 
 .text-white-50 {
   --bs-text-opacity: 1;
-  color: rgba(255, 255, 255, 0.5) !important;
+  color: rgba(255, 255, 255, 1) !important;
 }
 
 .text-reset {
@@ -11165,4 +11165,3 @@ fieldset:disabled .btn {
   background-position: center;
   background-size: cover;
 }
-

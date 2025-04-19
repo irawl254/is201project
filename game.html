@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lizard Snack Attack</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Use Inter font */
+        body {
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f4f8; /* Light blue-grey background */
+            overflow: hidden; /* Prevent scrollbars */
+        }
+
+        a{
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            text-decoration: none;
+            color: #4a5568; /* Dark grey */
+            font-size: 1.25rem; /* Larger font size */
+            font-weight: 600; /* Semi-bold */
+            background-color: #edf2f7; /* Light grey background */
+            padding: 0.5rem 1rem; /* Padding for button-like appearance */
+            border-radius: 0.5rem; /* Rounded corners */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        }
+        /* Game area styling */
+        #game-area {
+            width: 90vw; /* Responsive width */
+            max-width: 600px; /* Max width */
+            height: 70vh; /* Responsive height */
+            max-height: 450px; /* Max height */
+            background: linear-gradient(to bottom, #a2d2ff, #bde0fe); /* Sky blue gradient */
+            border: 3px solid #4a5568; /* Dark grey border */
+            position: relative; /* Needed for absolute positioning of items inside */
+            overflow: hidden; /* Keep elements inside */
+            cursor: none; /* Hide the default cursor */
+            border-radius: 0.75rem; /* Rounded corners */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Shadow */
+        }
+        /* Lizard styling */
+        #lizard {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            font-size: 30px; /* Emoji size */
+            user-select: none; /* Prevent text selection */
+            transition: transform 0.1s ease-out; /* Smooth rotation */
+            /* Center the emoji visually */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        /* Insect styling */
+        .insect {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            font-size: 20px; /* Emoji size */
+            user-select: none; /* Prevent text selection */
+            /* Center the emoji visually */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        /* Ensure UI elements are on top */
+        #ui-container {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center; /* Align items vertically */
+            z-index: 10;
+            background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent white background */
+            padding: 5px 10px;
+            border-radius: 0.5rem;
+        }
+         /* Lives display styling */
+        #lives-display {
+            font-size: 1.25rem; /* Larger hearts */
+            line-height: 1; /* Prevent extra spacing */
+        }
+        /* Message box styling */
+        #message-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.75); /* Dark semi-transparent */
+            color: white;
+            padding: 20px 30px;
+            border-radius: 0.75rem;
+            text-align: center;
+            z-index: 20;
+            font-size: 1.25rem;
+            display: none; /* Hidden by default */
+            box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+        }
+         /* Start button styling */
+        #start-button {
+             position: absolute;
+             top: 50%;
+             left: 50%;
+             transform: translate(-50%, -50%);
+             z-index: 25;
+             /* Tailwind classes for styling */
+             padding: 0.75rem 1.5rem; /* p-3 px-6 */
+             font-size: 1.125rem; /* text-lg */
+             font-weight: 600; /* font-semibold */
+             color: white; /* text-white */
+             background-image: linear-gradient(to right, #2dd4bf, #14b8a6); /* bg-gradient-to-r from-teal-400 to-teal-600 */
+             border-radius: 0.5rem; /* rounded-lg */
+             border: none;
+             cursor: pointer;
+             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* shadow-md */
+             transition: all 0.2s ease-in-out;
+        }
+         /* Start button hover effect */
+         #start-button:hover {
+             background-image: linear-gradient(to right, #14b8a6, #0f766e); /* hover:from-teal-600 hover:to-teal-700 */
+             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* hover:shadow-lg */
+             transform: translate(-50%, -52%); /* Slight lift on hover */
+         }
+         /* Restart button styling */
+         #restart-button {
+             margin-top: 1rem; /* mt-4 */
+             padding: 0.5rem 1rem; /* p-2 px-4 */
+             background-color: #3b82f6; /* bg-blue-500 */
+             color: white; /* text-white */
+             border-radius: 0.375rem; /* rounded-md */
+             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+             transition: background-color 0.15s ease-in-out;
+             border: none;
+             cursor: pointer;
+             font-weight: 500; /* font-medium */
+         }
+         #restart-button:hover {
+            background-color: #2563eb; /* hover:bg-blue-600 */
+         }
+
+    </style>
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <a href="scratch.html">Back to Lizard Page!</a>
+    <div id="game-container" class="flex flex-col items-center space-y-4 p-4">
+        <h1 class="text-2xl font-bold text-gray-700">Lizard Snack Attack 🦎</h1>
+
+        <div id="game-area">
+            <div id="ui-container">
+                <div class="text-lg font-semibold text-gray-800">Score: <span id="score">0</span></div>
+                <div id="lives-display" class="text-lg font-semibold text-gray-800">Lives: <span id="lives">❤️❤️❤️</span></div>
+            </div>
+
+            <div id="lizard">🦎</div>
+
+            <div id="message-box">
+                <p id="message-text">Click Start to Play!</p>
+                <button id="restart-button" style="display: none;">Play Again?</button>
+            </div>
+
+             <button id="start-button">Start Game</button>
+        </div>
+         <p class="text-sm text-gray-500 mt-2">Move mouse to control lizard. Don't let 3 insects get past!</p>
+    </div>
+
+    <script>
+        // --- DOM Elements ---
+        const gameArea = document.getElementById('game-area');
+        const lizard = document.getElementById('lizard');
+        const scoreDisplay = document.getElementById('score');
+        const livesSpan = document.getElementById('lives'); // Span containing heart emojis
+        const messageBox = document.getElementById('message-box');
+        const messageText = document.getElementById('message-text');
+        const startButton = document.getElementById('start-button');
+        const restartButton = document.getElementById('restart-button');
+
+        // --- Game Configuration ---
+        const STARTING_LIVES = 3;
+        const BASE_SPAWN_RATE = 1200; // Initial milliseconds between spawns (slower start)
+        const BASE_FALL_SPEED = 2.5; // Initial fall speed
+        const MIN_SPAWN_RATE = 350; // Fastest spawn rate (milliseconds)
+        const MAX_FALL_SPEED = 7;  // Maximum fall speed
+        const DIFFICULTY_INCREASE_INTERVAL = 5; // Increase difficulty every X points
+        const INSECT_TYPES = ['🦋', '🦟', '🐞', '🦗', '🐝']; // Added bee
+
+        // --- Game State Variables ---
+        let score = 0;
+        let lives = STARTING_LIVES;
+        let currentSpawnRate = BASE_SPAWN_RATE;
+        let currentFallSpeed = BASE_FALL_SPEED;
+        let gameInterval = null; // For game loop (movement, collision)
+        let spawnInterval = null; // For spawning insects
+        let insects = []; // Array to hold insect elements
+        let isGameOver = true; // Game starts as 'over' until Start is pressed
+        let lastMouseX = 0; // Track mouse direction
+        let scoreCheckCounter = 0; // Counter to check score for difficulty increase
+
+        // --- Event Listeners ---
+        startButton.addEventListener('click', startGame);
+        restartButton.addEventListener('click', startGame);
+        gameArea.addEventListener('mousemove', moveLizard);
+
+        // --- Game Functions ---
+
+        /**
+         * Initializes and starts the game
+         */
+        function startGame() {
+            console.log("Starting game...");
+            // Reset state
+            score = 0;
+            lives = STARTING_LIVES;
+            currentSpawnRate = BASE_SPAWN_RATE;
+            currentFallSpeed = BASE_FALL_SPEED;
+            scoreCheckCounter = 0; // Reset difficulty check counter
+            isGameOver = false;
+            insects.forEach(insect => insect.remove()); // Clear old insects from DOM
+            insects = []; // Clear the array
+
+            // Update UI
+            scoreDisplay.textContent = score;
+            updateLivesDisplay(); // Update visual lives display
+            messageBox.style.display = 'none';
+            startButton.style.display = 'none';
+            restartButton.style.display = 'none';
+            gameArea.style.cursor = 'none';
+
+            // Start intervals
+            clearIntervals();
+            gameInterval = setInterval(gameLoop, 1000 / 60); // ~60 FPS
+            // Start initial spawn interval
+            spawnInterval = setInterval(spawnInsect, currentSpawnRate);
+
+             // Initial lizard position
+            const gameAreaRect = gameArea.getBoundingClientRect();
+            lizard.style.left = `${gameAreaRect.width / 2 - lizard.offsetWidth / 2}px`;
+            lizard.style.top = `${gameAreaRect.height - lizard.offsetHeight - 10}px`;
+            lizard.style.transform = 'scaleX(1)'; // Reset facing direction
+        }
+
+        /**
+         * Moves the lizard based on mouse position
+         * @param {MouseEvent} event - The mouse move event
+         */
+        function moveLizard(event) {
+            if (isGameOver) return;
+
+            const gameAreaRect = gameArea.getBoundingClientRect();
+            let mouseX = event.clientX - gameAreaRect.left;
+            mouseX = Math.max(0, Math.min(mouseX, gameAreaRect.width - lizard.offsetWidth)); // Clamp horizontal position
+
+            const fixedY = gameAreaRect.height - lizard.offsetHeight - 10; // Fixed vertical position near bottom
+            lizard.style.left = `${mouseX}px`;
+            lizard.style.top = `${fixedY}px`;
+
+            // Flip lizard based on direction
+            if (mouseX > lastMouseX + 2) {
+                lizard.style.transform = 'scaleX(1)'; // Facing right
+            } else if (mouseX < lastMouseX - 2) {
+                lizard.style.transform = 'scaleX(-1)'; // Facing left
+            }
+            lastMouseX = mouseX;
+        }
+
+        /**
+         * Main game loop: moves insects, checks collisions, checks difficulty
+         */
+        function gameLoop() {
+            if (isGameOver) return;
+
+            moveInsects();
+            checkCollisions();
+            // Difficulty check is now implicitly handled when score increases in checkCollisions
+        }
+
+         /**
+         * Updates the visual display of lives (hearts)
+         */
+        function updateLivesDisplay() {
+            livesSpan.textContent = '❤️'.repeat(Math.max(0, lives)); // Show hearts based on lives count
+             // Optionally add styling for low lives
+             if (lives === 1) {
+                 livesSpan.classList.add('text-red-600', 'animate-pulse');
+             } else {
+                 livesSpan.classList.remove('text-red-600', 'animate-pulse');
+             }
+        }
+
+        /**
+         * Spawns a new insect
+         */
+        function spawnInsect() {
+            if (isGameOver) return;
+
+            const gameAreaRect = gameArea.getBoundingClientRect();
+            const insectElement = document.createElement('div');
+            insectElement.classList.add('insect');
+            insectElement.textContent = INSECT_TYPES[Math.floor(Math.random() * INSECT_TYPES.length)];
+
+            const randomX = Math.random() * (gameAreaRect.width - 30); // Keep inside horizontally
+            insectElement.style.left = `${randomX}px`;
+            insectElement.style.top = '-30px'; // Start above screen
+
+            gameArea.appendChild(insectElement);
+            insects.push(insectElement);
+        }
+
+        /**
+         * Moves all active insects down the screen and handles misses
+         */
+        function moveInsects() {
+            const gameAreaRect = gameArea.getBoundingClientRect();
+            // Iterate backwards to safely remove elements while looping
+            for (let i = insects.length - 1; i >= 0; i--) {
+                const insect = insects[i];
+                const currentTop = parseFloat(insect.style.top);
+                const newTop = currentTop + currentFallSpeed; // Use current fall speed
+                insect.style.top = `${newTop}px`;
+
+                // Check if insect reached the bottom (missed)
+                if (newTop > gameAreaRect.height) {
+                    insect.remove();
+                    insects.splice(i, 1); // Remove from array
+
+                    // Lose a life
+                    if (!isGameOver) { // Only lose life if game is active
+                        lives--;
+                        updateLivesDisplay();
+                        console.log(`Missed! Lives left: ${lives}`);
+                        if (lives <= 0) {
+                            endGame("You ran out of lives!");
+                            break; // Stop checking other insects if game over
+                        }
+                    }
+                }
+            }
+        }
+
+        /**
+         * Checks for collisions between the lizard and insects
+         */
+        function checkCollisions() {
+            const lizardRect = lizard.getBoundingClientRect();
+
+            // Iterate backwards to safely remove elements while looping
+            for (let i = insects.length - 1; i >= 0; i--) {
+                const insect = insects[i];
+                const insectRect = insect.getBoundingClientRect();
+
+                if (
+                    lizardRect.left < insectRect.right &&
+                    lizardRect.right > insectRect.left &&
+                    lizardRect.top < insectRect.bottom && // Lizard is fixed vertically, so top/bottom checks are important
+                    lizardRect.bottom > insectRect.top
+                ) {
+                    // Collision detected!
+                    score++;
+                    scoreDisplay.textContent = score;
+                    insect.remove();
+                    insects.splice(i, 1);
+
+                    // Check if difficulty should increase
+                    scoreCheckCounter++;
+                    if (scoreCheckCounter >= DIFFICULTY_INCREASE_INTERVAL) {
+                         increaseDifficulty();
+                         scoreCheckCounter = 0; // Reset counter
+                    }
+
+
+                    // Catch visual effect
+                    lizard.style.transform += ' scale(1.1)';
+                    setTimeout(() => {
+                         // Reset scale, considering direction
+                         lizard.style.transform = lizard.style.transform.includes('scaleX(-1)') ? 'scaleX(-1)' : 'scaleX(1)';
+                    }, 100);
+                }
+            }
+        }
+
+         /**
+          * Increases game difficulty by adjusting spawn rate and fall speed
+          */
+         function increaseDifficulty() {
+             // Decrease spawn rate (make insects appear faster), but not below minimum
+             currentSpawnRate = Math.max(MIN_SPAWN_RATE, currentSpawnRate - 50); // Decrease by 50ms each time
+
+             // Increase fall speed, but not above maximum
+             currentFallSpeed = Math.min(MAX_FALL_SPEED, currentFallSpeed + 0.25); // Increase by 0.25px/frame
+
+             console.log(`Difficulty Increased: Speed=${currentFallSpeed.toFixed(2)}, Spawn Rate=${currentSpawnRate}ms`);
+
+             // Restart the spawn interval with the new rate
+             clearInterval(spawnInterval);
+             if (!isGameOver) { // Only restart if game is still running
+                spawnInterval = setInterval(spawnInsect, currentSpawnRate);
+             }
+         }
+
+
+        /**
+         * Ends the game
+         * @param {string} message - The reason the game ended
+         */
+        function endGame(message) {
+            console.log("Ending game...");
+            isGameOver = true;
+            clearIntervals();
+
+            messageText.innerHTML = `${message}<br>Final Score: ${score}`;
+            messageBox.style.display = 'block';
+            restartButton.style.display = 'inline-block'; // Use inline-block for button
+            gameArea.style.cursor = 'default';
+        }
+
+        /** Clears all active intervals */
+        function clearIntervals() {
+            clearInterval(gameInterval);
+            clearInterval(spawnInterval); // Clear spawn interval too
+            gameInterval = null;
+            spawnInterval = null;
+        }
+
+        // --- Initial Setup ---
+        messageText.textContent = "Catch the bugs! Miss 3 and you're out!";
+        messageBox.style.display = 'block';
+        restartButton.style.display = 'none';
+        startButton.style.display = 'block';
+        updateLivesDisplay(); // Show initial lives
+
+    </script>
+
+</body>
+</html>
